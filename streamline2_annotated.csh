@@ -1,4 +1,13 @@
 #!/bin/csh -f
+###################
+### section 1: everything in section 1 can be ignored since we are going
+### to use MCwrapper to generate Monte Carlo, except for the argument handling.
+### $run is the run number
+### $base is the tag in MCwrapper
+### $maxev is the number of events analyzed from the Monte Carlo run,
+###   could be less than the total generated, used to disambiguate small
+###   test runs from complete runs.
+###################
 set echo
 #
 # streamline.csh
@@ -49,6 +58,9 @@ set savebase = $base
 # echo "echo:" hd_root -PPLUGINS=monitoring_hists,ReactionFilter -PReaction1=1_111__m111_8_9 -PNTHREADS=4 -PEVENTS_TO_KEEP=${maxev} -PKALMAN:ADD_VERTEX_POINT=1 ../hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_19*.hddm -o hd_root_Z2pi0_trees_${base}_signal_${maxev}_test.root
 # hd_root -PPLUGINS=monitoring_hists,ReactionFilter -PReaction1=1_111__m111_8_9 -PNTHREADS=4 -PEVENTS_TO_KEEP=1000 -PKALMAN:ADD_VERTEX_POINT=1 ../hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_190.hddm -o hd_root_Z2pi0_trees_${base}_signal_${maxev}_test.root 
 #
+###################
+### section 2: run the MC root trees through the DSelector, must be done for both signal and phase space MC.
+###################
 # Use this option if root trees have already been created using MC wrapper
 # rm -f tree_pi0pi0misspb208.root
 # hadd tree_pi0pi0misspb208.root ../../gen_2pi0_primakoff_signal_sigma/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_350.root
@@ -60,6 +72,9 @@ set savebase = $base
 # echo root -l -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees_${base}_signal_${maxev}\"\)
 # root -l -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees_${base}_signal_${maxev}\"\)
 ## No Longer needed: tree_to_amptools treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}.root pi0pi0misspb208_TreeFlat
+###################
+### section 3: Prepare the four samples needed by amptools for signal MC only
+###################
 # root -b -q treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}.root 'call_MakeAmpToolsFlat_pi0.C(1)'
 # mv AmpToolsInputTree.root treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}_amptools_W.root
 # root -b -q treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}.root 'call_MakeAmpToolsFlat_pi0.C(2)'
@@ -69,12 +84,17 @@ set savebase = $base
 # root -b -q treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}.root 'call_MakeAmpToolsFlat_pi0.C(4)'
 # mv AmpToolsInputTreeInTimeW.root treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}_amptools_InTimeW.root
 
+### this comment refers to need to run the DSelector on the phase space MC
 # Now repeat for flat distribution. Also need the generated flat distributions.
+### base gets hardwired
 set base = "test"
 
 #No longer needed: gen_2pi0_primakoff -c gen_2pi0_primakoff_flat.cfg -o tree_gen_2pi0_${base}_primakoff_flat_${maxev}.root -hd gen_2pi0_primakoff_flat.hddm -a 5.5 -b 6.0 -p 6.0 -m 11.6 -n ${maxev} -r ${run}
 #No longer needed: root -b -q tree_gen_2pi0_primakoff_${base}_flat_${maxev}_gen.root 'call_MakeAmpToolsFlat_gen.C'
 #
+###################
+### section 4: create the thrown events for AmpTools
+###################
 # use the following process to obtain generated 'tagged'files
 # hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 -PEVENTS_TO_KEEP=${maxev} ../../gen_2pi0_primakoff_signal_sigma_flat/hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_372.hddm -o hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root
 ## hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 -PEVENTS_TO_KEEP=${maxev} ../../gen_2pi0_primakoff_flat_sigma/hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_*.hddm -o hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root
@@ -82,6 +102,9 @@ set base = "test"
 # root -b -q tree_hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root 'call_MakeAmpToolsFlat_mcthrown_pi0.C'
 # mv AmpToolsInputTree.root treeFlat_gen_2pi0_primakoff_${base}_flat_${maxev}_amptools.root
 
+#########################
+### section 5: function unknown
+########################
 #
 # Use this option if root trees have already been created using MC wrapper for flat files.
 # rm -f tree_pi0pi0misspb208.root
@@ -99,7 +122,13 @@ set base = "test"
 set tagfit = "W"
 set base = ${savebase}_${tagfit}
 
+#########################
+### section 6: do the AmpTools fit
+#############################
 # fit -c fit_2pi0_primakoff_${tagfit}_${maxev}.cfg  >! twopi_primakoff_DSelect_${base}_${maxev}.list
+###########################
+### section 7: plot the fit results
+#########################
 cp twopi0_primakoff.fit twopi_primakoff_DSelect_${base}_${maxev}.fit
 twopi_plotter_primakoff twopi_primakoff_DSelect_${base}_${maxev}.fit -o twopi_primakoff_DSelect_${base}_${maxev}.root
 mv twopi_fitPars.txt twopi_primakoff_DSelect_${base}_${maxev}.fit2
