@@ -1,0 +1,12 @@
+base = nppmmi
+maxev = 10000
+run = 30300
+
+all: tree_pi0pi0misspb208.root
+
+tree_pi0pi0misspb208.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_nppmmi_030300_000.root
+	rm -fv $@
+	hadd $@ $<
+
+
+root -b -q tree_hd_root_Z2pi0_trees_${base}_signal_${maxev}.root 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")' >! DSelector_Z2pi0_trees_${base}_signal_${maxev}.list
