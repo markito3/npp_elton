@@ -1,12 +1,20 @@
-base = nppmmi
-maxev = 10000
-run = 30300
+ROOT_MACROS = call_DSelector2.C DSelector_Z2pi0_trees2.C DSelector_Z2pi0_trees2.h
+DSELECTOR_OUTPUTS = DSelector_Z2pi0_trees2.root tree_DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees.root
 
-all: tree_pi0pi0misspb208.root
+all: $(DSELECTOR_OUTPUTS)
 
 tree_pi0pi0misspb208.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_nppmmi_030300_000.root
 	rm -fv $@
 	hadd $@ $<
 
+%.C: $(NPP)/root_macros/%.C
+	cp -v $< $@
 
-root -b -q tree_hd_root_Z2pi0_trees_${base}_signal_${maxev}.root 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")' >! DSelector_Z2pi0_trees_${base}_signal_${maxev}.list
+%.h: $(NPP)/root_macros/%.h
+	cp -v $< $@
+
+$(DSELECTOR_OUTPUTS): tree_pi0pi0misspb208.root $(ROOT_MACROS)
+	root -b -q tree_pi0pi0misspb208.root 'call_DSelector2.C("DSelector_Z2pi0_trees2.C")'
+
+clean:
+	$(RM) *.pcm *.d *.so tree_pi0pi0misspb208.root $(ROOT_MACROS) $(DSELECTOR_OUTPUTS)
