@@ -2,10 +2,13 @@ DSELECTOR_MACROS = call_DSelector2.C DSelector_Z2pi0_trees2.C DSelector_Z2pi0_tr
 DSELECTOR_OUTPUTS = DSelector_Z2pi0_trees2.root tree_DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees.root
 
 PLOT_MACROS = plot_Z2pi_trees.C
-PLOT_INPUTS = DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees.root
 
 FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.h
+
+PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
 all: fit
+
+dsplots: DSelector_Z2pi0_trees_sig.pdf DSelector_Z2pi0_trees_ps.pdf
 
 tree_pi0pi0misspb208_%.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_%_030300_000.root
 	rm -fv $@
@@ -16,25 +19,52 @@ tree_pi0pi0misspb208_%.root: /work/halld/home/marki/npp_output/root/trees/tree_p
 
 %.h: $(NPP)/root_macros/%.h
 	cp -v $< $@
-
-DSelector_Z2pi0_trees_%.root: tree_pi0pi0misspb208_%.root $(DSELECTOR_MACROS)
+#
+# Run the DSelector
+#
+DSelector_Z2pi0_trees_%.root \
+tree_DSelector_Z2pi0_trees_%.root \
+treeFlat_DSelector_Z2pi0_trees_%.root: tree_pi0pi0misspb208_%.root $(DSELECTOR_MACROS)
 	root -b -q $< 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")'
 	mv -v DSelector_Z2pi0_trees2.root DSelector_Z2pi0_trees_$*.root
-
-DSelector_Z2pi0_trees_%.root: DSelector_Z2pi0_trees2_%.root
-	cp -v $< $@
-
-plots: $(PLOT_MACROS) $(PLOT_INPUTS)
-	root -b -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees\"\)
-
-AmpToolsInputTreeInTime.root: treeFlat_DSelector_Z2pi0_trees.root $(FLAT_MACROS)
-	root -b -q treeFlat_DSelector_Z2pi0_trees.root 'call_MakeAmpToolsFlat_pi0.C(2)'
-
-treeFlat_DSelector_Z2pi0_trees_flat_amptools.root: AmpToolsInputTreeInTime.root
-	cp -v AmpToolsInputTreeInTime.root treeFlat_DSelector_Z2pi0_trees_flat_amptools.root
+	mv -v tree_DSelector_Z2pi0_trees.root tree_DSelector_Z2pi0_trees_$*.root
+	mv -v treeFlat_DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees_$*.root
+#
+# Make plots for DSelector run
+#
+DSelector_Z2pi0_trees_%.pdf EgP1P2_signal_DSelector_%.pdf: DSelector_Z2pi0_trees_%.root $(PLOT_MACROS)
+	root -b -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees_$*\"\)
+	mv -v EgP1P2_signal_DSelector.pdf EgP1P2_signal_DSelector_$*.pdf
+#
+# Prepare four samples from signal MC for AmpTools
+#
+treeFlat_DSelector_Z2pi0_trees_signal_amptools_W.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(1)'
+	mv -v AmpToolsInputTree.root $@
+treeFlat_DSelector_Z2pi0_trees_signal_amptools_InTime.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(2)'
+	mv -v AmpToolsInputTreeInTime.root $@
+treeFlat_DSelector_Z2pi0_trees_signal_amptools_OutTime.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(3)'
+	mv -v AmpToolsInputTreeOutTime.root $@
+treeFlat_DSelector_Z2pi0_trees_signal_amptools_InTimeW.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(4)'
+	mv -v AmpToolsInputTreeInTimeW.root $@
+#
+# make root tree with phase space event sample
+#
+tree_hd_root_Z2pi0_trees_flat_gen.root: /work/halld/home/marki/npp_output/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_000.hddm
+	hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 /work/halld/home/marki/npp_output/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_000.hddm -o hd_root_Z2pi0_trees_flat_gen.root
+	mv -v tree_thrown.root $@
+#
+# change space space event root tree into AmpTools format
+#
+treeFlat_gen_2pi0_primakoff_flat_amptools.root: tree_hd_root_Z2pi0_trees_flat_gen.root $(PHASE_SPACE_EVENT_MACROS)
+	root -b -q $< 'call_MakeAmpToolsFlat_mcthrown_pi0.C'
+	mv -v AmpToolsInputTree.root $@
 
 fit: $(NPP)/amptools/fit_2pi0_primakoff.cfg treeFlat_DSelector_Z2pi0_trees_flat_amptools.root
 	fit -c $(NPP)/amptools/fit_2pi0_primakoff.cfg
 
 clean:
-	rm -fv *.pcm *.d *.so *.pdf tree_pi0pi0misspb208.root $(DSELECTOR_MACROS) $(DSELECTOR_OUTPUTS) $(PLOT_MACROS) $(PLOT_INPUTS) $(PLOT_OUTPUTS) $(FLAT_MACROS) AmpToolsInputTreeInTime.root
+	rm -fv *.pcm *.d *.so *.pdf *.root *.C *.h
