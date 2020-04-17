@@ -7,7 +7,7 @@ PLOT_INPUTS = DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees.root
 FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.h
 all: fit
 
-tree_pi0pi0misspb208.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_nppmmi_030300_000.root
+tree_pi0pi0misspb208_%.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_%_030300_000.root
 	rm -fv $@
 	hadd $@ $<
 
@@ -17,11 +17,12 @@ tree_pi0pi0misspb208.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0
 %.h: $(NPP)/root_macros/%.h
 	cp -v $< $@
 
-$(DSELECTOR_OUTPUTS): tree_pi0pi0misspb208.root $(DSELECTOR_MACROS)
-	root -b -q tree_pi0pi0misspb208.root 'call_DSelector2.C("DSelector_Z2pi0_trees2.C")'
+DSelector_Z2pi0_trees_%.root: tree_pi0pi0misspb208_%.root $(DSELECTOR_MACROS)
+	root -b -q $< 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")'
+	mv -v DSelector_Z2pi0_trees2.root DSelector_Z2pi0_trees_$*.root
 
-DSelector_Z2pi0_trees.root: DSelector_Z2pi0_trees2.root
-	cp -v DSelector_Z2pi0_trees2.root DSelector_Z2pi0_trees.root
+DSelector_Z2pi0_trees_%.root: DSelector_Z2pi0_trees2_%.root
+	cp -v $< $@
 
 plots: $(PLOT_MACROS) $(PLOT_INPUTS)
 	root -b -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees\"\)

@@ -1,0 +1,8 @@
+RUN = 30300
+EVENTS = 1000
+
+all: .sig_done .ps_done
+
+.%_done: $(NPP)/MC_config/MC_%.config
+	gluex_MC.py $< $(RUN) $(EVENTS)
+	date > $@
