@@ -103,7 +103,7 @@ set base = "test"
 # mv AmpToolsInputTree.root treeFlat_gen_2pi0_primakoff_${base}_flat_${maxev}_amptools.root
 
 #########################
-### section 5: function unknown
+### section 5: analysze phase space MC
 ########################
 #
 # Use this option if root trees have already been created using MC wrapper for flat files.
