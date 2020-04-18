@@ -6,7 +6,8 @@ PLOT_MACROS = plot_Z2pi_trees.C
 FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.h
 
 PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
-all: fit
+
+all: plot
 
 dsplots: DSelector_Z2pi0_trees_sig.pdf DSelector_Z2pi0_trees_ps.pdf
 #
@@ -84,10 +85,10 @@ twopi_primakoff.root twopi_fitPars.txt: twopi0_primakoff.fit
 #
 # 7.2 Plot the fit results
 #
-plot: twopi_primakoff.C
-	root -b -q twopi_primakoff.C\(\"twopi_primakoff.root\",10000\)
-#q
+plot: twopi_primakoff.root twopi_primakoff.C
+	root -b -q twopi_primakoff.C\(\"twopi_primakoff\",10000\)
+#
 # clean
 #
 clean:
-	rm -fv *.pcm *.d *.so *.pdf *.root *.C *.h
+	rm -fv *.pcm *.d *.so *.pdf *.root *.C *.h *.fit twopi0_primakoff_ni.txt twopi_fitPars.txt
