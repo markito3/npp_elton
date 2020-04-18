@@ -59,7 +59,7 @@ set savebase = $base
 # hd_root -PPLUGINS=monitoring_hists,ReactionFilter -PReaction1=1_111__m111_8_9 -PNTHREADS=4 -PEVENTS_TO_KEEP=1000 -PKALMAN:ADD_VERTEX_POINT=1 ../hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_190.hddm -o hd_root_Z2pi0_trees_${base}_signal_${maxev}_test.root 
 #
 ###################
-### section 2: run the MC root trees through the DSelector, must be done for both signal and phase space MC.
+### section 2: run the signal MC root trees through the DSelector
 ###################
 # Use this option if root trees have already been created using MC wrapper
 # rm -f tree_pi0pi0misspb208.root
@@ -84,7 +84,7 @@ set savebase = $base
 # root -b -q treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}.root 'call_MakeAmpToolsFlat_pi0.C(4)'
 # mv AmpToolsInputTreeInTimeW.root treeFlat_DSelector_Z2pi0_trees_${base}_signal_${maxev}_amptools_InTimeW.root
 
-### this comment refers to need to run the DSelector on the phase space MC
+### this comment refers to need to run the DSelector on the phase space MC, but that is done explicitly in section 5
 # Now repeat for flat distribution. Also need the generated flat distributions.
 ### base gets hardwired
 set base = "test"
@@ -103,7 +103,7 @@ set base = "test"
 # mv AmpToolsInputTree.root treeFlat_gen_2pi0_primakoff_${base}_flat_${maxev}_amptools.root
 
 #########################
-### section 5: analysze phase space MC
+### section 5: run the phase space MC through the DSelector
 ########################
 #
 # Use this option if root trees have already been created using MC wrapper for flat files.
