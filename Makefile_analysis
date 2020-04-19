@@ -1,3 +1,6 @@
+#
+# variables
+#
 DSELECTOR_MACROS = call_DSelector2.C DSelector_Z2pi0_trees2.C DSelector_Z2pi0_trees2.h
 DSELECTOR_OUTPUTS = DSelector_Z2pi0_trees2.root tree_DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees.root
 
@@ -6,8 +9,10 @@ PLOT_MACROS = plot_Z2pi_trees.C
 FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.h
 
 PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
-
-all: plot
+#
+# rules
+#
+all: twopi_primakoff.pdf twopi_primakoff_sum.pdf
 
 dsplots: DSelector_Z2pi0_trees_sig.pdf DSelector_Z2pi0_trees_ps.pdf
 #
@@ -80,12 +85,13 @@ twopi0_primakoff.fit twopi0_primakoff_ni.txt: treeFlat_gen_2pi0_primakoff_flat_a
 #
 # 7.1 Transform fit results to a root file
 #
-twopi_primakoff.root twopi_fitPars.txt: twopi0_primakoff.fit
+twopi_primakoff.root twopi_primakoff.fit2: twopi0_primakoff.fit
 	twopi_plotter_primakoff twopi0_primakoff.fit -o twopi_primakoff.root
+	mv -v twopi_fitPars.txt twopi_primakoff.fit2
 #
 # 7.2 Plot the fit results
 #
-plot: twopi_primakoff.root twopi_primakoff.C
+twopi_primakoff.pdf twopi_primakoff_sum.pdf: twopi_primakoff.root twopi_primakoff.fit2 twopi_primakoff.C
 	root -b -q twopi_primakoff.C\(\"twopi_primakoff\",10000\)
 #
 # clean
