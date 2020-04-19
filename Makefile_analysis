@@ -97,4 +97,4 @@ twopi_primakoff.pdf twopi_primakoff_sum.pdf: twopi_primakoff.root twopi_primakof
 # clean
 #
 clean:
-	rm -fv *.pcm *.d *.so *.pdf *.root *.C *.h *.fit twopi0_primakoff_ni.txt twopi_fitPars.txt
+	rm -fv *.pcm *.d *.so *.pdf *.root *.C *.h *.fit *.txt *.fit2
