@@ -1,5 +1,5 @@
 RUN = 30300
-EVENTS = 1000
+EVENTS = 10000
 
 all: .sig_done .ps_done
 
