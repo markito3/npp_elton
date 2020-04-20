@@ -2,7 +2,6 @@
 # variables
 #
 DSELECTOR_MACROS = call_DSelector2.C DSelector_Z2pi0_trees2.C DSelector_Z2pi0_trees2.h
-DSELECTOR_OUTPUTS = DSelector_Z2pi0_trees2.root tree_DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees.root
 
 PLOT_MACROS = plot_Z2pi_trees.C
 
