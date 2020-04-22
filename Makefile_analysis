@@ -9,9 +9,10 @@ FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFla
 
 PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
 
-INPUT_TREES_SIG = $(wildcard /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_sig_030300_*.root)
-INPUT_TREES_PS = $(wildcard /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_ps_030300_*.root)
-
+MC_OUTPUT_DIR = /work/halld/home/marki/npp_output
+INPUT_TREES_SIG = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_sig_030300_*.root)
+INPUT_TREES_PS = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_ps_030300_*.root)
+MC_HDDM_FILES = $(wildcard $(MC_OUTPUT_DIR)/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_*.hddm)
 #
 # rules
 #
@@ -76,38 +77,42 @@ treeFlat_DSelector_Z2pi0_trees_signal_amptools_InTimeW.root: treeFlat_DSelector_
 #
 # 4.1 make root tree with phase space event sample
 #
-tree_hd_root_Z2pi0_trees_flat_gen.root: /work/halld/home/marki/npp_output/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_000.hddm
+tree_hd_root_Z2pi0_trees_flat_gen.root: $(MC_HDDM_FILES)
 	@echo Makefile_analysis info: make root tree with phase space event sample
-	hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 /work/halld/home/marki/npp_output/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_000.hddm -o hd_root_Z2pi0_trees_flat_gen.root
+	hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=1 $(MC_HDDM_FILES) -o hd_root_Z2pi0_trees_flat_gen.root
 	mv -v tree_thrown.root $@
 #
 # 4.2 change space generated event root tree into AmpTools format
 #
 treeFlat_gen_2pi0_primakoff_flat_amptools.root: tree_hd_root_Z2pi0_trees_flat_gen.root $(PHASE_SPACE_EVENT_MACROS)
+	@echo Makefile_analysis info: change space generated event root tree into AmpTools format
 	root -b -q $< 'call_MakeAmpToolsFlat_mcthrown_pi0.C'
 	mv -v AmpToolsInputTree.root $@
 #
 # 5.3 prepare phase space accepted events for AmpTools 
 #
 treeFlat_DSelector_Z2pi0_trees_flat_amptools_InTime.root: treeFlat_DSelector_Z2pi0_trees_ps.root $(FLAT_MACROS)
+	@echo Makefile_analysis info: prepare phase space accepted events for AmpTools
 	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(2)'
 	mv -v AmpToolsInputTreeInTime.root $@
 #
 # 6. do the AmpTools fit
 #
 twopi0_primakoff.fit twopi0_primakoff_ni.txt: treeFlat_gen_2pi0_primakoff_flat_amptools.root treeFlat_DSelector_Z2pi0_trees_flat_amptools_InTime.root treeFlat_DSelector_Z2pi0_trees_signal_amptools_W.root
-#
+	@echo Makefile_analysis info: do the fit
 	fit -c $(NPP)/amptools_config/fit_2pi0_primakoff.cfg
 #
 # 7.1 Transform fit results to a root file
 #
 twopi_primakoff.root twopi_primakoff.fit2: twopi0_primakoff.fit
+	@echo Makefile_analysis info: Transform fit results to a root file
 	twopi_plotter_primakoff twopi0_primakoff.fit -o twopi_primakoff.root
 	mv -v twopi_fitPars.txt twopi_primakoff.fit2
 #
 # 7.2 Plot the fit results
 #
 twopi_primakoff.pdf twopi_primakoff_sum.pdf: twopi_primakoff.root twopi_primakoff.fit2 twopi_primakoff.C
+	@echo Makefile_analysis info: Plot the fit results
 	root -b -q twopi_primakoff.C\(\"twopi_primakoff\",10000\)
 #
 # clean
