@@ -8,6 +8,10 @@ PLOT_MACROS = plot_Z2pi_trees.C
 FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.h
 
 PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
+
+INPUT_TREES_SIG = $(wildcard /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_sig_030300_*.root)
+INPUT_TREES_PS = $(wildcard /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_ps_030300_*.root)
+
 #
 # rules
 #
@@ -15,11 +19,17 @@ all: twopi_primakoff.pdf twopi_primakoff_sum.pdf
 
 dsplots: DSelector_Z2pi0_trees_sig.pdf DSelector_Z2pi0_trees_ps.pdf
 #
-# get the data from the MC run, add multiple files together, for signal or phase space by setting the % token properly
+# get the data from the MC run, add multiple files together, for signal or phase space
 #
-tree_pi0pi0misspb208_%.root: /work/halld/home/marki/npp_output/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_%_030300_000.root
+tree_pi0pi0misspb208_sig.root: $(INPUT_TREES_SIG)
+	@echo Makefile_analysis info: hadd the trees for signal 
 	rm -fv $@
-	hadd $@ $<
+	hadd $@ $(INPUT_TREES_SIG)
+
+tree_pi0pi0misspb208_ps.root: $(INPUT_TREES_PS)
+	@echo Makefile_analysis info: hadd the trees for phase space
+	rm -fv $@
+	hadd $@ $(INPUT_TREES_PS)
 
 %.C: $(NPP)/root_macros/%.C
 	cp -v $< $@
@@ -32,6 +42,7 @@ tree_pi0pi0misspb208_%.root: /work/halld/home/marki/npp_output/root/trees/tree_p
 DSelector_Z2pi0_trees_%.root \
 tree_DSelector_Z2pi0_trees_%.root \
 treeFlat_DSelector_Z2pi0_trees_%.root: tree_pi0pi0misspb208_%.root $(DSELECTOR_MACROS)
+	@echo Makefile_analysis: run the DSelector for $*
 	root -b -q $< 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")'
 	mv -v DSelector_Z2pi0_trees2.root DSelector_Z2pi0_trees_$*.root
 	mv -v tree_DSelector_Z2pi0_trees.root tree_DSelector_Z2pi0_trees_$*.root
@@ -40,27 +51,33 @@ treeFlat_DSelector_Z2pi0_trees_%.root: tree_pi0pi0misspb208_%.root $(DSELECTOR_M
 # 2.3 and 5.3 Make plots for DSelector run
 #
 DSelector_Z2pi0_trees_%.pdf EgP1P2_signal_DSelector_%.pdf: DSelector_Z2pi0_trees_%.root $(PLOT_MACROS)
+	@echo Makefile_analysis info: make plots for DSelector run for $*
 	root -b -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees_$*\"\)
 	mv -v EgP1P2_signal_DSelector.pdf EgP1P2_signal_DSelector_$*.pdf
 #
 # 3. Prepare four samples from signal MC for AmpTools
 #
 treeFlat_DSelector_Z2pi0_trees_signal_amptools_W.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	@echo Makefile_analysis info: make W signal sample for AmpTools
 	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(1)'
 	mv -v AmpToolsInputTree.root $@
 treeFlat_DSelector_Z2pi0_trees_signal_amptools_InTime.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	@echo Makefile_analysis info: make InTime signal sample for AmpTools
 	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(2)'
 	mv -v AmpToolsInputTreeInTime.root $@
 treeFlat_DSelector_Z2pi0_trees_signal_amptools_OutTime.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	@echo Makefile_analysis info: make OutTime signal sample for AmpTools
 	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(3)'
 	mv -v AmpToolsInputTreeOutTime.root $@
 treeFlat_DSelector_Z2pi0_trees_signal_amptools_InTimeW.root: treeFlat_DSelector_Z2pi0_trees_sig.root $(FLAT_MACROS)
+	@echo Makefile_analysis info: make InTimeW signal sample for AmpTools
 	root -b -q $< 'call_MakeAmpToolsFlat_pi0.C(4)'
 	mv -v AmpToolsInputTreeInTimeW.root $@
 #
 # 4.1 make root tree with phase space event sample
 #
 tree_hd_root_Z2pi0_trees_flat_gen.root: /work/halld/home/marki/npp_output/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_000.hddm
+	@echo Makefile_analysis info: make root tree with phase space event sample
 	hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 /work/halld/home/marki/npp_output/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_000.hddm -o hd_root_Z2pi0_trees_flat_gen.root
 	mv -v tree_thrown.root $@
 #
