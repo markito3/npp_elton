@@ -13,6 +13,7 @@ MC_OUTPUT_DIR = /work/halld/home/marki/npp_output
 INPUT_TREES_SIG = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_sig_030300_*.root)
 INPUT_TREES_PS = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_ps_030300_*.root)
 MC_HDDM_FILES = $(wildcard $(MC_OUTPUT_DIR)/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_*.hddm)
+TOTAL_EVENTS = 50000
 #
 # rules
 #
@@ -113,7 +114,7 @@ twopi_primakoff.root twopi_primakoff.fit2: twopi0_primakoff.fit
 #
 twopi_primakoff.pdf twopi_primakoff_sum.pdf: twopi_primakoff.root twopi_primakoff.fit2 twopi_primakoff.C
 	@echo Makefile_analysis info: Plot the fit results
-	root -b -q twopi_primakoff.C\(\"twopi_primakoff\",10000\)
+	root -b -q twopi_primakoff.C\(\"twopi_primakoff\",$(TOTAL_EVENTS)\)
 #
 # clean
 #
