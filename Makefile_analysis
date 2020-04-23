@@ -9,7 +9,7 @@ FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFla
 
 PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
 
-MC_OUTPUT_DIR = /work/halld/home/marki/npp_output
+MC_OUTPUT_DIR = /work/halld/home/marki/npp_output_100000
 INPUT_TREES_SIG = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_sig_030300_*.root)
 INPUT_TREES_PS = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_ps_030300_*.root)
 MC_HDDM_FILES = $(wildcard $(MC_OUTPUT_DIR)/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_*.hddm)
@@ -99,9 +99,9 @@ treeFlat_DSelector_Z2pi0_trees_flat_amptools_InTime.root: treeFlat_DSelector_Z2p
 #
 # 6. do the AmpTools fit
 #
-twopi0_primakoff.fit twopi0_primakoff_ni.txt: treeFlat_gen_2pi0_primakoff_flat_amptools.root treeFlat_DSelector_Z2pi0_trees_flat_amptools_InTime.root treeFlat_DSelector_Z2pi0_trees_signal_amptools_W.root
+twopi0_primakoff.fit twopi0_primakoff_ni.txt: $(NPP)/amptools_config/fit_2pi0_primakoff_File.cfg treeFlat_gen_2pi0_primakoff_flat_amptools.root treeFlat_DSelector_Z2pi0_trees_flat_amptools_InTime.root treeFlat_DSelector_Z2pi0_trees_signal_amptools_W.root
 	@echo Makefile_analysis info: do the fit
-	fit -c $(NPP)/amptools_config/fit_2pi0_primakoff.cfg
+	fit -c $<
 #
 # 7.1 Transform fit results to a root file
 #
