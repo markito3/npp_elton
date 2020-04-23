@@ -1,0 +1,182 @@
+
+## CONFIGURATION INFO DISPLAY ##
+
+############################################
+#############   REACTION INFO  #############
+############################################
+      REACTION NAME:  Primakoff
+      PARTICLE LIST:  4
+		1.  gamma
+		2.  Pi01
+		3.  Pi02
+		4.  Pb208
+        DATA READER:  ROOTDataReader
+				treeFlat_DSelector_Z2pi0_trees_test_signal_20000_amptools_InTime.root
+        BACKGROUND READER:  ROOTDataReader
+				treeFlat_DSelector_Z2pi0_trees_test_signal_20000_amptools_OutTime.root
+      ACC MC READER:  ROOTDataReader
+				treeFlat_DSelector_Z2pi0_trees_test_flat_20000_amptools.root
+      GEN MC READER:  ROOTDataReader
+				treeFlat_gen_2pi0_primakoff_test_flat_20000_amptools.root
+  NORMALIZATION INTEGRAL FILE: 
+		    twopi0_primakoff_ni.txt
+********************************************
+***********  COHERENT SUM INFO  ************
+********************************************
+      REACTION NAME:  Primakoff
+  COHERENT SUM NAME:  Aplus
+++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++  AMPLITUDE INFO  +++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++
+      REACTION NAME:  Primakoff
+  COHERENT SUM NAME:  Aplus
+     AMPLITUDE NAME:  g1V00
+            FACTORS:  2
+		1.   TwoPiAngles_primakoff 0 0.7 0 0 0
+		2.   TwoPiWt_primakoff 9.6 0.028 230.0 0.02 1 2
+ EXTRA PERMUTATIONS:  0
+        CONSTRAINTS:  1
+		1.  Primakoff  Aminus  g1V00
+         PARAMETERS:  0
+      INITIAL VALUE:  (10,0)
+               REAL?  1
+              FIXED?  0
+              SCALE:  1.0
+++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++  AMPLITUDE INFO  +++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++
+      REACTION NAME:  Primakoff
+  COHERENT SUM NAME:  Aplus
+     AMPLITUDE NAME:  g1V00s
+            FACTORS:  2
+		1.   TwoPiAngles_primakoff 0 0.7 0 0 0
+		2.   TwoPiWt_sigma 1.29 0. 1 2
+ EXTRA PERMUTATIONS:  0
+        CONSTRAINTS:  1
+		1.  Primakoff  Aminus  g1V00s
+         PARAMETERS:  0
+      INITIAL VALUE:  (140,0)
+               REAL?  0
+              FIXED?  0
+              SCALE:  1.0
+********************************************
+***********  COHERENT SUM INFO  ************
+********************************************
+      REACTION NAME:  Primakoff
+  COHERENT SUM NAME:  Aminus
+++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++  AMPLITUDE INFO  +++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++
+      REACTION NAME:  Primakoff
+  COHERENT SUM NAME:  Aminus
+     AMPLITUDE NAME:  g1V00s
+            FACTORS:  4
+		1.   TwoPiNC_tdist 0.45 0. 230.0 1 2
+		2.   TwoPiAngles_primakoff 0 0.7 0 1 0
+		3.   TwoPiWt_sigma 1.29 0. 1 2
+		4.   TwoPiNC_tdist 0.45 0. 230.0 1 2
+ EXTRA PERMUTATIONS:  0
+        CONSTRAINTS:  1
+		1.  Primakoff  Aplus  g1V00s
+         PARAMETERS:  0
+      INITIAL VALUE:  (140,0)
+               REAL?  0
+              FIXED?  0
+              SCALE:  1.0
+++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++  AMPLITUDE INFO  +++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++
+      REACTION NAME:  Primakoff
+  COHERENT SUM NAME:  Aminus
+     AMPLITUDE NAME:  g1V00
+            FACTORS:  2
+		1.   TwoPiAngles_primakoff 0 0.7 0 1 0
+		2.   TwoPiWt_primakoff 9.6 0.028 230.0 0.02 1 2
+ EXTRA PERMUTATIONS:  0
+        CONSTRAINTS:  1
+		1.  Primakoff  Aplus  g1V00
+         PARAMETERS:  0
+      INITIAL VALUE:  (1,0)
+               REAL?  1
+              FIXED?  0
+              SCALE:  1.0
+ **********
+ **    1 **SET STRATEGY  1
+ **********
+ NOW USING STRATEGY  1: TRY TO BALANCE SPEED AGAINST RELIABILITY
+ **********
+ **    2 **SET EPS  1e-13
+ **********
+ FLOATING-POINT NUMBERS ASSUMED ACCURATE TO 1e-13
+
+## AMPLITUDE MANAGER INITIALIZATION ##
+ Creating amplitude manager for reaction:  Primakoff
+	 particle index assignment:  gamma -->> 0
+	 particle index assignment:  Pi01 -->> 1
+	 particle index assignment:  Pi02 -->> 2
+	 particle index assignment:  Pb208 -->> 3
+ PARAMETER DEFINITIONS:
+    NO.   NAME                 VALUE      STEP SIZE      LIMITS
+     1 Primakoff::Aplus::g1V00_re           10          0.1     no limits
+     2 Primakoff::Aplus::g1V00s_re          140          1.4     no limits
+     3 Primakoff::Aplus::g1V00s_im            0         0.01     no limits
+Allocating Data and Amplitude Array in LikelihoodCalculator for Primakoff...
+Resetting source kin in treeFlat_DSelector_Z2pi0_trees_test_signal_20000_amptools_InTime.root
+Resetting source kin in treeFlat_DSelector_Z2pi0_trees_test_signal_20000_amptools_OutTime.root
+	Done.
+Loading acccepted Monte Carlo...
+Resetting source kin in treeFlat_DSelector_Z2pi0_trees_test_flat_20000_amptools.root
+	Done.
+Calculating integrals...
+	Done.
+LIKELIHOOD BEFORE MINIMIZATION:  -49486
+ **********
+ **    3 **MIGRAD 5000
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY 1.  CONVERGENCE WHEN EDM .LT. 1.00e-04
+ FCN=-54116.6 FROM MIGRAD     STATUS=INITIATE       45          46 TOTAL
+
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER                              CURRENT GUESS       STEP         FIRST   
+  NO.   NAME                       VALUE          ERROR          SIZE      DERIVATIVE 
+    1  Primakoff::Aplus::g1V00_re            10           0.1             0       -263.36
+    2 Primakoff::Aplus::g1V00s_re           140           1.4             0         -1.52
+    3 Primakoff::Aplus::g1V00s_im       -512.01          0.01       -486.99      0.027722
+
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-55505.8 FROM MIGRAD     STATUS=CONVERGED     186         187 TOTAL
+
+                     EDM=1.21159e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                                  STEP         FIRST   
+  NO.   NAME                       VALUE          ERROR          SIZE      DERIVATIVE 
+    1  Primakoff::Aplus::g1V00_re        18.606       0.30913      0.069625     0.0049486
+    2 Primakoff::Aplus::g1V00s_re        446.51        12.155        1.9259    0.00018134
+    3 Primakoff::Aplus::g1V00s_im        263.35        26.472        4.3937   -0.00013679
+
+ EXTERNAL ERROR MATRIX.    NDIM= 100    NPAR=  3    ERR DEF=1
+      0.0956      -1.96       3.67
+       -1.96        148       -250
+        3.67       -250        701
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3
+      1:     0.527  1.000 -0.522  0.449
+      2:     0.802 -0.522  1.000 -0.778
+      3:     0.779  0.449 -0.778  1.000
+
+ MIGRAD evaluation total wall time:  0.043979 s.
+    average time per function call:  0.23393 ms.
+
+LIKELIHOOD AFTER MINIMIZATION:  -55506
+Loading generated Monte Carlo...
+Resetting source kin in treeFlat_gen_2pi0_primakoff_test_flat_20000_amptools.root
+	Done.
+Calculating integrals...
+	Done.
+Loading acccepted Monte Carlo...
+Resetting source kin in treeFlat_DSelector_Z2pi0_trees_test_flat_20000_amptools.root
+	Done.
+Calculating integrals...
+	Done.
