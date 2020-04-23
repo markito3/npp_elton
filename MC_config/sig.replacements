@@ -1,0 +1,4 @@
+tag=sig
+output_dir=/work/halld/home/marki/npp_output
+npp_elton_dir=/home/marki/npp_elton
+generator_config_file=gen_2pi0_primakoff_signal_sigma.cfg
