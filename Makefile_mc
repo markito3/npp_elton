@@ -1,8 +1,14 @@
 RUN = 30300
-EVENTS = 100000
+EVENTS = 1000
 
 all: .sig_done .ps_done
 
-.%_done: $(NPP)/MC_config/MC_%.config
+MC_%.config: $(NPP)/MC_config/MC.config.template $(NPP)/MC_config/make_mc_config.sh
+	$(NPP)/MC_config/make_mc_config.sh $(NPP)/MC_config/$*.replacements > $@
+
+.%_done: MC_%.config
 	gluex_MC.py $< $(RUN) $(EVENTS)
 	date > $@
+
+clean:
+	$(RM) MC_*.config
