@@ -77,55 +77,48 @@ void MakeAmpToolsFlat_mcthrown_pi0::Loop()
 
 
   // Process entries in Tree
-  TLorentzVector *decaypi01;
-  TLorentzVector *decaypi02;
-
+  TLorentzVector *decayPi0s[2];
+  int Pi0Counter = 0;
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       cout << "Get next jentry=" << jentry << " nentries="  << nentries << " ientry="  << ientry << " NumThrown=" << NumThrown << endl;
-      if (jentry==1471 || jentry==13756 || jentry==18079 || jentry==32070 || jentry==35115 || jentry==36390) continue;   // skip events that bomb
+
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       cout << "Get next event=" << jentry << " nb=" << nb << endl;
       // if (Cut(ientry) < 0) continue;
       TLorentzVector *pb208 = (TLorentzVector *)Thrown__P4->At(0);
 
-      if (NumThrown == 7) {
-	decaypi01 = (TLorentzVector *)Thrown__P4->At(5);
-       decaypi02 = (TLorentzVector *)Thrown__P4->At(6);
+      for (int j=0; j<NumThrown; j++){
+	if (Thrown__PID[j] == 7){
+	  decayPi0s[Pi0Counter++] = (TLorentzVector *)Thrown__P4->At(j);
+	}
       }
-      else if (NumThrown == 8) {
-        decaypi01 = (TLorentzVector *)Thrown__P4->At(6);
-	decaypi02 = (TLorentzVector *)Thrown__P4->At(7);
-      }
-      else {
-	cout << "**** MakeAmpToolsFlat_mcthrown_pi0 - illegal NumThrown=" << NumThrown << endl; 
-	continue;
-      }
+
 
       cout << endl << " RunNumber=" << RunNumber << " EventNumber=" << EventNumber << " NumPIDThrown_FinalState=" << NumPIDThrown_FinalState 
       << " PIDThrown_Decaying=" << PIDThrown_Decaying << " NumThrown=" << NumThrown << endl;
       cout << " mass=" <<  ThrownBeam__P4->M() <<  " PID= " << ThrownBeam__PID << " "; ThrownBeam__P4->Print();
       cout << " mass=" << pb208->M() << " "; pb208->Print();
-      cout << " mass=" << decaypi01->M() << " "; decaypi01->Print();
-      cout << " mass=" << decaypi02->M() << " "; decaypi02->Print();
+      cout << " mass=" << decayPi0s[0]->M() << " "; decayPi0s[0]->Print();
+      cout << " mass=" << decayPi0s[1]->M() << " "; decayPi0s[1]->Print();
 
       TLorentzVector Target(0,0,0,m_TargetMass);
 
-      TLorentzVector Sum = Target + *ThrownBeam__P4 - *decaypi01 - *decaypi02 - *pb208;
+      TLorentzVector Sum = Target + *ThrownBeam__P4 - *decayPi0s[0] - *decayPi0s[1] - *pb208;
 
       cout<< "jentry=" << jentry << " px=" << Sum.Px()<< " py=" << Sum.Py()<< " pz=" << Sum.Pz()<< " E=" << Sum.E() << endl;
 
-      m_e[0] = decaypi01->E();
-       m_px[0] = decaypi01->Px();
-       m_py[0] = decaypi01->Py();
-       m_pz[0] = decaypi01->Pz();
-       m_e[1] = decaypi02->E();
-       m_px[1] = decaypi02->Px();
-       m_py[1] = decaypi02->Py();
-       m_pz[1] = decaypi02->Pz();
+      m_e[0] = decayPi0s[0]->E();
+       m_px[0] = decayPi0s[0]->Px();
+       m_py[0] = decayPi0s[0]->Py();
+       m_pz[0] = decayPi0s[0]->Pz();
+       m_e[1] = decayPi0s[1]->E();
+       m_px[1] = decayPi0s[1]->Px();
+       m_py[1] = decayPi0s[1]->Py();
+       m_pz[1] = decayPi0s[1]->Pz();
        m_e[2] = pb208->E();
        m_px[2] = pb208->Px();
        m_py[2] = pb208->Py();
