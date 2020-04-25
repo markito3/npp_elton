@@ -84,45 +84,48 @@ void MakeAmpToolsFlat_mcthrown_pi0::Loop()
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
-      cout << "Get next jentry=" << jentry << " nentries="  << nentries << " ientry="  << ientry << " NumThrown=" << NumThrown << endl;
+      cout << "Get next jentry=" << jentry << " nentries="  
+	   << nentries << " ientry="  << ientry << " NumThrown=" 
+	   << NumThrown << endl;
 
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       cout << "Get next event=" << jentry << " nb=" << nb << endl;
       // if (Cut(ientry) < 0) continue;
       TLorentzVector *pb208 = (TLorentzVector *)Thrown__P4->At(0);
 
-      for (int j=0; j<NumThrown; j++){
-	if (Thrown__PID[j] == 7){
-	  decayPi0s[Pi0Counter++] = (TLorentzVector *)Thrown__P4->At(j);
+      for (int n=0; n<NumThrown; n++) {
+	if (Thrown__PID[n] == 7){
+	  decayPi0s[Pi0Counter++] = (TLorentzVector *)Thrown__P4->At(n);
 	}
       }
-
 
       cout << endl << " RunNumber=" << RunNumber << " EventNumber=" << EventNumber << " NumPIDThrown_FinalState=" << NumPIDThrown_FinalState 
       << " PIDThrown_Decaying=" << PIDThrown_Decaying << " NumThrown=" << NumThrown << endl;
       cout << " mass=" <<  ThrownBeam__P4->M() <<  " PID= " << ThrownBeam__PID << " "; ThrownBeam__P4->Print();
       cout << " mass=" << pb208->M() << " "; pb208->Print();
-      cout << " mass=" << decayPi0s[0]->M() << " "; decayPi0s[0]->Print();
-      cout << " mass=" << decayPi0s[1]->M() << " "; decayPi0s[1]->Print();
+      cout << " mass=" << decayPi0s[0]->M() << " "<<endl;// decaypi01->Print();
+      cout << " mass=" << decayPi0s[1]->M() << " "<<endl;// decaypi02->Print();
 
       TLorentzVector Target(0,0,0,m_TargetMass);
 
-      TLorentzVector Sum = Target + *ThrownBeam__P4 - *decayPi0s[0] - *decayPi0s[1] - *pb208;
+      TLorentzVector Sum = Target + *ThrownBeam__P4 - *decayPi0s[0]
+	- *decayPi0s[1] - *pb208;
 
-      cout<< "jentry=" << jentry << " px=" << Sum.Px()<< " py=" << Sum.Py()<< " pz=" << Sum.Pz()<< " E=" << Sum.E() << endl;
+      cout<< "jentry=" << jentry << " px=" << Sum.Px()<< " py=" 
+	  << Sum.Py()<< " pz=" << Sum.Pz()<< " E=" << Sum.E() << endl;
 
       m_e[0] = decayPi0s[0]->E();
-       m_px[0] = decayPi0s[0]->Px();
-       m_py[0] = decayPi0s[0]->Py();
-       m_pz[0] = decayPi0s[0]->Pz();
-       m_e[1] = decayPi0s[1]->E();
-       m_px[1] = decayPi0s[1]->Px();
-       m_py[1] = decayPi0s[1]->Py();
-       m_pz[1] = decayPi0s[1]->Pz();
-       m_e[2] = pb208->E();
-       m_px[2] = pb208->Px();
-       m_py[2] = pb208->Py();
-       m_pz[2] = pb208->Pz();
+      m_px[0] = decayPi0s[0]->Px();
+      m_py[0] = decayPi0s[0]->Py();
+      m_pz[0] = decayPi0s[0]->Pz();
+      m_e[1] = decayPi0s[1]->E();
+      m_px[1] = decayPi0s[1]->Px();
+      m_py[1] = decayPi0s[1]->Py();
+      m_pz[1] = decayPi0s[1]->Pz();
+      m_e[2] = pb208->E();
+      m_px[2] = pb208->Px();
+      m_py[2] = pb208->Py();
+      m_pz[2] = pb208->Pz();
 
        m_eBeam = ThrownBeam__P4->E();
        m_pxBeam = ThrownBeam__P4->Px();
