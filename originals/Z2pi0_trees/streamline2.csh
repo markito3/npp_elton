@@ -13,10 +13,10 @@ unset base
 unset maxev
 
 if( $#argv == 0 ) then
-    set run = "030003"
+    set run = "030401"
     set base = "test"
 #    set base = "TEST"
-    set maxev = 10000
+    set maxev = 100000
 else if ( $#argv == 1) then
     set run = $1
     set base = ""
@@ -50,9 +50,12 @@ set savebase = $base
 # hd_root -PPLUGINS=monitoring_hists,ReactionFilter -PReaction1=1_111__m111_8_9 -PNTHREADS=4 -PEVENTS_TO_KEEP=1000 -PKALMAN:ADD_VERTEX_POINT=1 ../hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_190.hddm -o hd_root_Z2pi0_trees_${base}_signal_${maxev}_test.root 
 #
 # Use this option if root trees have already been created using MC wrapper
-# rm -f tree_pi0pi0misspb208.root
-# hadd tree_pi0pi0misspb208.root ../../gen_2pi0_primakoff_signal_sigma/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_350.root
-# hadd tree_pi0pi0misspb208.root ../root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_010.root
+# rm -f tree_pi0pi0misspb208.root 
+# rm -f temp.root
+# hadd tree_pi0pi0misspb208.root ../../gen_2pi0_primakoff_signal_sigma/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_00*.root
+## hadd temp.root ../../gen_2pi0_primakoff_signal_sigma/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_03*.root
+## hadd tree_pi0pi0misspb208.root temp.root ../../gen_2pi0_primakoff_eta/root/trees/tree_pi0pi0misspb208__B2_genEtaRegge_${base}_${run}_0*.root 
+## hadd tree_pi0pi0misspb208.root temp.root ../../gen_2pi0_incoherent/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_10*.root
 # mv tree_pi0pi0misspb208.root tree_hd_root_Z2pi0_trees_${base}_signal_${maxev}.root
 # root -b -q tree_hd_root_Z2pi0_trees_${base}_signal_${maxev}.root 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")' >! DSelector_Z2pi0_trees_${base}_signal_${maxev}.list
 # mv DSelector_Z2pi0_trees2.root DSelector_Z2pi0_trees_${base}_signal_${maxev}.root
@@ -72,38 +75,39 @@ set savebase = $base
 # Now repeat for flat distribution. Also need the generated flat distributions.
 set base = "test"
 
-#No longer needed: gen_2pi0_primakoff -c gen_2pi0_primakoff_flat.cfg -o tree_gen_2pi0_${base}_primakoff_flat_${maxev}.root -hd gen_2pi0_primakoff_flat.hddm -a 5.5 -b 6.0 -p 6.0 -m 11.6 -n ${maxev} -r ${run}
-#No longer needed: root -b -q tree_gen_2pi0_primakoff_${base}_flat_${maxev}_gen.root 'call_MakeAmpToolsFlat_gen.C'
+##No longer needed: gen_2pi0_primakoff -c gen_2pi0_primakoff_flat.cfg -o tree_gen_2pi0_${base}_primakoff_flat_${maxev}.root -hd gen_2pi0_primakoff_flat.hddm -a 5.5 -b 6.0 -p 6.0 -m 11.6 -n ${maxev} -r ${run}
+##No longer needed: root -b -q tree_gen_2pi0_primakoff_${base}_flat_${maxev}_gen.root 'call_MakeAmpToolsFlat_gen.C'
 #
-# use the following process to obtain generated 'tagged'files
-# hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 -PEVENTS_TO_KEEP=${maxev} ../../gen_2pi0_primakoff_signal_sigma_flat/hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_372.hddm -o hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root
-## hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 -PEVENTS_TO_KEEP=${maxev} ../../gen_2pi0_primakoff_flat_sigma/hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_*.hddm -o hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root
+## use the following process to obtain generated 'tagged'files
+# hd_root -PPLUGINS=monitoring_hists,mcthrown_tree -PNTHREADS=4 -PEVENTS_TO_KEEP=${maxev} ../../gen_2pi0_primakoff_signal_sigma_flat/hddm/dana_rest_gen_2pi0_primakoff_${base}_${run}_0*.hddm -o hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root
 # mv tree_thrown.root tree_hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root
 # root -b -q tree_hd_root_Z2pi0_trees_${base}_flat_${maxev}_gen.root 'call_MakeAmpToolsFlat_mcthrown_pi0.C'
 # mv AmpToolsInputTree.root treeFlat_gen_2pi0_primakoff_${base}_flat_${maxev}_amptools.root
 
 #
-# Use this option if root trees have already been created using MC wrapper for flat files.
+## Use this option if root trees have already been created using MC wrapper for flat files.
 # rm -f tree_pi0pi0misspb208.root
-# hadd tree_pi0pi0misspb208.root ../../gen_2pi0_primakoff_signal_sigma_flat/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_372.root
+# echo hadd tree_pi0pi0misspb208.root ../../gen_2pi0_primakoff_signal_sigma_flat/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_00*.root
+# hadd tree_pi0pi0misspb208.root ../../gen_2pi0_primakoff_signal_sigma_flat/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_${base}_${run}_00*.root
 # mv tree_pi0pi0misspb208.root tree_hd_root_Z2pi0_trees_${base}_flat_${maxev}.root
 # root -b -q tree_hd_root_Z2pi0_trees_${base}_flat_${maxev}.root 'call_DSelector2.C("DSelector_Z2pi0_trees2.C+")' >! DSelector_Z2pi0_trees_${base}_flat_${maxev}.list
 # mv DSelector_Z2pi0_trees2.root DSelector_Z2pi0_trees_${base}_flat_${maxev}.root
 # mv treeFlat_DSelector_Z2pi0_trees.root treeFlat_DSelector_Z2pi0_trees_${base}_flat_${maxev}.root
 # root -b -q  plot_Z2pi_trees.C\(\"DSelector_Z2pi0_trees_${base}_flat_${maxev}\"\)
-#No longer needed: tree_to_amptools tree_DSelector_Z2pi0_trees_${base}_flat_${maxev}.root pi0pi0misspb208_Tree
+## No longer needed: tree_to_amptools tree_DSelector_Z2pi0_trees_${base}_flat_${maxev}.root pi0pi0misspb208_Tree
 # root -b -q treeFlat_DSelector_Z2pi0_trees_${base}_flat_${maxev}.root 'call_MakeAmpToolsFlat_pi0.C(2)'   # avoid any negative weights
 # mv AmpToolsInputTreeInTime.root treeFlat_DSelector_Z2pi0_trees_${base}_flat_${maxev}_amptools.root   
 
 # set base = ${savebase}
-set tagfit = "W"
+set tagfit = "File"
 set base = ${savebase}_${tagfit}
 
-# fit -c fit_2pi0_primakoff_${tagfit}_${maxev}.cfg  >! twopi_primakoff_DSelect_${base}_${maxev}.list
+fit -c fit_2pi0_primakoff_${tagfit}_${maxev}.cfg  >! twopi_primakoff_DSelect_${base}_${maxev}.list
 cp twopi0_primakoff.fit twopi_primakoff_DSelect_${base}_${maxev}.fit
 twopi_plotter_primakoff twopi_primakoff_DSelect_${base}_${maxev}.fit -o twopi_primakoff_DSelect_${base}_${maxev}.root
 mv twopi_fitPars.txt twopi_primakoff_DSelect_${base}_${maxev}.fit2
-root -b -q twopi_primakoff.C\(\"twopi_primakoff_DSelect_${base}_${maxev}\",${maxev}\)
+echo root -b -q twopi_primakoff.C\(\"twopi_primakoff_DSelect_${base}_${maxev}\",${maxev}\)
+# root -b -q twopi_primakoff.C\(\"twopi_primakoff_DSelect_${base}_${maxev}\",${maxev}\)
 
 unset echo
 

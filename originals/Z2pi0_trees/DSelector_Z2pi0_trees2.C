@@ -79,7 +79,10 @@ void DSelector_Z2pi0_trees2::Init(TTree *locTree)
 	dHist_tgen = new TH1I("tgen", ";|t| Gen (GeV/c)^{2}", 100, 0.0, 0.01);
 	dHist_tkin = new TH1I("tkin", ";|t| Kin (GeV/c)^{2}", 100, 0.0, 0.01);
 	dHist_tdiff = new TH1I("tdiff", ";|t| Kin - Gen (GeV/c)^{2}", 100, -0.01, 0.01);
+	dHist_tgen_M2pigen = new TH2I("tgen_M2pigen", "; M_{#pi#pi} Gen (GeV/c^{2} ; |t| Gen (GeV/c)^{2}", 400, 0.2, 0.6, 50, 0, 0.02);
+	dHist_tkin_M2pikin = new TH2I("tkin_M2pikin", "; M_{#pi#pi} Kin (GeV/c^{2} ; |t| Kin (GeV/c)^{2}", 400, 0.2, 0.6, 50, 0, 0.002);
 	dHist_tkin_tgen = new TH2I("tkin_tgen", "; |t| Gen ; |t| Kin (GeV/c)^{2}", 50, 0, 0.002, 50, 0, 0.002);
+	dHist_tkin_MissingMassSquared = new TH2I("tkin_MissingMassSquared"," ; Missing Mass Squared (GeV/c^{2})^{2}; |t| Gen (GeV/c)^{2}" , 600, -0.24, 0.24, 50, 0, 0.2);
 	dHist_thetapipigen = new TH1I("thetapipigen", ";thetapipi Gen (degrees)", 100, 0.0, 5.);
 	dHist_thetapipikin = new TH1I("thetapipikin", ";thetapipi Kin (degrees)", 100, 0.0, 5.);
 	dHist_thetapipidiff = new TH1I("thetapipidiff", ";thetapipi Kin - Gen (degrees)", 100, -2.5, 2.5);
@@ -131,8 +134,11 @@ void DSelector_Z2pi0_trees2::Init(TTree *locTree)
 	dMaxBeamEnergy = 6.0;
 	dMin2piMass = 0.2;
 	dMax2piMass = 1.0;
+	// dMinMissingMassSquared = -0.04;
 	dMinMissingMassSquared = -0.1;
-	dMaxMissingMassSquared = 0.1;
+	dMaxMissingMassSquared = 0.04;
+	dMinThetapipi = 0.;
+	dMaxThetapipi = 1.5;         // restrict range on thetapipi angle
 
 	/************************** EXAMPLE USER INITIALIZATION: CUSTOM OUTPUT BRANCHES - MAIN TREE *************************/
 
@@ -451,13 +457,23 @@ Bool_t DSelector_Z2pi0_trees2::Process(Long64_t locEntry)
 		cout << " Passed Missing mass cut " << endl;
 
 		// kinematic fit CL cut
-		dHist_KinFitChiSq->Fill(dComboWrapper->Get_ChiSq_KinFit("")/dComboWrapper->Get_NDF_KinFit(""));
+                double kinfitChi2NDF = dComboWrapper->Get_ChiSq_KinFit("")/dComboWrapper->Get_NDF_KinFit("");
+		dHist_KinFitChiSq->Fill(kinfitChi2NDF);
 		dHist_KinFitCL->Fill(dComboWrapper->Get_ConfidenceLevel_KinFit(""));
 		if(dComboWrapper->Get_ConfidenceLevel_KinFit("") <= dMinKinFitCL) {
 			dComboWrapper->Set_IsComboCut(true);
 			continue;
 		}
+                
 		cout << " Passed kinematic Fit CL cut " << endl;
+
+                if (kinfitChi2NDF > dMaxKinFitChiSq) {
+			dComboWrapper->Set_IsComboCut(true);
+                        continue;       // Chi2 cut
+		}
+
+		cout << " Passed Min Chi2 cut " << endl;
+
 		// 2pi mass histogram and cut
 		map<Particle_t, set<Int_t> > locUsedThisCombo_2piMass;
 		locUsedThisCombo_2piMass[Gamma].insert(locPhoton1NeutralID);
@@ -589,6 +605,15 @@ Bool_t DSelector_Z2pi0_trees2::Process(Long64_t locEntry)
 		// calculate kinematic and angular variables
 		double tkin = (locBeamP4 - loc2piP4).M2();    // use beam and 2pi momenta
 		double thetapipikin = loc2piP4.Theta()*180./PI;
+
+		// Cut on pipi scattering angle
+		if((thetapipikin < dMinThetapipi ) || (thetapipikin >  dMaxThetapipi)){  // kin fit
+			dComboWrapper->Set_IsComboCut(true);    
+			continue; 
+		}
+
+		cout << " Passed thetapipi angle cut " << endl;
+
 		TLorentzRotation resonanceBoost2( -loc2piP4.BoostVector() );   // boost into 2pi frame
 		beam_res = resonanceBoost2 * locBeamP4;
 		recoil_res = resonanceBoost2 * locMissingPb208P4;
@@ -654,6 +679,11 @@ Bool_t DSelector_Z2pi0_trees2::Process(Long64_t locEntry)
 			dHist_tkin->Fill(fabs(tkin));
 			dHist_tdiff->Fill(fabs(tkin)-fabs(tgen));
 			dHist_tkin_tgen->Fill(fabs(tgen),fabs(tkin));
+			dHist_tkin_M2pikin->Fill(loc2piP4.M(),fabs(tkin));
+			dHist_tgen_M2pigen->Fill(loc2piP4_Thrown.M(),fabs(tkin));
+			cout << " fill histogram " << endl;
+			cout << " tkin=" << tkin << " MissingMassSquared=" << locMissingMassSquared << endl;
+			dHist_tkin_MissingMassSquared->Fill(locMissingMassSquared,fabs(tkin));
 			dHist_thetapipigen->Fill(thetapipigen);
 			dHist_thetapipikin->Fill(thetapipikin);
 			dHist_thetapipidiff->Fill(thetapipikin-thetapipigen);

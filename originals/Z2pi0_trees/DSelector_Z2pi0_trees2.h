@@ -78,7 +78,10 @@ class DSelector_Z2pi0_trees2 : public DSelector
 		TH1I* dHist_thetapipidiff;
 
 		TH2I* dHist_gthetalab_Eg;
+		TH2I* dHist_tgen_M2pigen;
+		TH2I* dHist_tkin_M2pikin;
 		TH2I* dHist_tkin_tgen;
+		TH2I* dHist_tkin_MissingMassSquared;
 		TH2I* dHist_thetapipikin_thetapipigen;
 		TH1I* dHist_CosTheta;
 		TH1I* dHist_CosThetadiff;
@@ -127,6 +130,8 @@ class DSelector_Z2pi0_trees2 : public DSelector
 		Double_t dMax2piMass;
 		Double_t dMinMissingMassSquared;
 		Double_t dMaxMissingMassSquared;
+		Double_t dMinThetapipi;
+		Double_t dMaxThetapipi;
 		
 		Double_t AccWeight;    // used to store weights due to accidental tagger subtraction
 
