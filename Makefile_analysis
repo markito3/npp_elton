@@ -9,7 +9,7 @@ FLAT_MACROS = call_MakeAmpToolsFlat_pi0.C MakeAmpToolsFlat_pi0.C MakeAmpToolsFla
 
 PHASE_SPACE_EVENT_MACROS = call_MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.C MakeAmpToolsFlat_mcthrown_pi0.h
 
-MC_OUTPUT_DIR = /work/halld/home/marki/npp_output_beni_fix
+MC_OUTPUT_DIR = ..
 INPUT_TREES_SIG = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_sig_030300_*.root)
 INPUT_TREES_PS = $(wildcard $(MC_OUTPUT_DIR)/root/trees/tree_pi0pi0misspb208__B2_gen_2pi0_primakoff_ps_030300_*.root)
 MC_HDDM_FILES = $(wildcard $(MC_OUTPUT_DIR)/hddm/dana_rest_gen_2pi0_primakoff_ps_030300_*.hddm)
