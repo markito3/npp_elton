@@ -86,7 +86,7 @@ void MakeAmpToolsFlat_mcthrown_pi0::Loop()
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       cout << "Get next jentry=" << jentry << " nentries="  << nentries << " ientry="  << ientry << " NumThrown=" << NumThrown << endl;
-      if (jentry==19628|| jentry==24286 || jentry==25260 ||  jentry==31177 ) continue;   // skip events that bomb
+      if (jentry==10379 || jentry==39263 ) continue;   // skip events that bomb
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       cout << "Get next event=" << jentry << " nb=" << nb << endl;
       // if (Cut(ientry) < 0) continue;
