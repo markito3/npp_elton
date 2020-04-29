@@ -12,8 +12,8 @@ For Mark:
 From meeting on April 29, 2020:
 
 * Critical files are that have changed are:
-** Z2pi0_trees/fit_2pi0_primakoff-File_100000.cfg
-** Z2pi0_trees/DSelector_Z2pi0_trees2.C
-** Z2pi0_trees/DSelector_Z2pi0_trees2.h
-** Z2pi0_trees/streamline2.csh
+    * Z2pi0_trees/fit_2pi0_primakoff-File_100000.cfg
+    * Z2pi0_trees/DSelector_Z2pi0_trees2.C
+    * Z2pi0_trees/DSelector_Z2pi0_trees2.h
+    * Z2pi0_trees/streamline2.csh
 * Also gen_2pi0_primakoff/MC_config now uses random background, not tagger only
