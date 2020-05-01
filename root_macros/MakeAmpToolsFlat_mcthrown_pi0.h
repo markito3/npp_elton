@@ -34,8 +34,8 @@ public :
    ULong64_t       PIDThrown_Decaying;
    Float_t         MCWeight;
    UInt_t          NumThrown;
-   Int_t           Thrown__ParentIndex[8];   //[NumThrown]
-   Int_t           Thrown__PID[8];   //[NumThrown]
+   Int_t           Thrown__ParentIndex[16];   //[NumThrown]
+   Int_t           Thrown__PID[16];   //[NumThrown]
    TClonesArray    *Thrown__X4;
    TClonesArray    *Thrown__P4;
 
