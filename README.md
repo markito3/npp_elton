@@ -38,6 +38,7 @@ Output goes to the directory named in the nppcfg file.
 ### 5) Analyze the Monte Carlo
 
 ```
+cd /work/halld/username/npp_work
 make -f $NPP/Makefile_analysis CONFIG=my.nppcfg
 ```
 
