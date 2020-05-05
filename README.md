@@ -24,7 +24,12 @@ cd /work/halld/username/npp_work
 cp $NPP/standard.nppcfg my.nppcfg
 ```
 
-Edit my.nppcfg to indicate your preferences. In particular, npp_elton_dir needs to point to the directory defined as $NPP above.
+Edit my.nppcfg to indicate your preferences.
+* number_of_events: number of events to generate for each of signal and phase space
+* mc_outout_dir: directory where MCwrapper should put its output
+* npp_elton_dir: the directory defined as $NPP above
+* generator_config_file_phase_space: name of file in $NPP_gen_config for generating phase space events
+* generator_config_file_signal: name of file in $NPP/gen_config for generating signal events
 
 ### 4) Generate the Monte Carlo
 
