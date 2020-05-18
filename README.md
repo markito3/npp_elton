@@ -1,4 +1,4 @@
-# Event Generation and Analysis for Neutral Pion Polarizability a la Smith
+# Event Generation and Analysis for Neutral Pion Polarizability
 
 ## Instructions
 
