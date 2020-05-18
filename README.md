@@ -6,7 +6,7 @@
 
 ```
 cd /home/username
-git clone https://github.com/markito3/npp_elton
+git clone https://github.com/jeffersonlab/npp_analysis
 ```
 
 ### 2) To setup the environment
